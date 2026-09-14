@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.nexus</groupId>
+    <artifactId>nexus-dimensions</artifactId>
+    <version>0.1.0</version>
+    <packaging>jar</packaging>
+
+    <name>NexusDimensions</name>
+    <description>Config-driven custom dimensions with fully custom terrain generation for Paper.</description>
+
+    <properties>
+        <maven.compiler.release>21</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Pin here rather than inline in the dependency below so bumping the
+             targeted Paper version is a one-line change. See DESIGN.md section 6
+             for the pack_format note that also needs to move in lockstep with this. -->
+        <paper.api.version>1.21.4-R0.1-SNAPSHOT</paper.api.version>
+    </properties>
+
+    <!-- Paper's own API isn't on Maven Central - it's published to PaperMC's
+         repository. This is the one thing a plain `mvn package` needs network
+         access to beyond Central itself; see the README's Building section. -->
+    <repositories>
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <!-- provided: the real implementation is supplied by the Paper server at
+             runtime - never bundled into our jar. Equivalent to Gradle's compileOnly. -->
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>${paper.api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>NexusDimensions-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.1</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>

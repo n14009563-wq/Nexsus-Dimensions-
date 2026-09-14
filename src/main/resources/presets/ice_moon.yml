@@ -1,0 +1,82 @@
+# Tier 1 (instant, no restart) - a cratered ice world with a normal sky.
+id: ice_moon
+displayName: "Frozen Moon"
+environment: NORMAL
+seed: 8675309
+
+terrain:
+  seaLevel: 20
+  baseHeight: 48
+  heightVariation: 90
+  noise:
+    frequency: 0.006
+    octaves: 5
+    lacunarity: 2.1
+    gain: 0.5
+    ridged: true          # abs(noise) -> sharp jagged crags, not smooth hills
+    warp: 0.35
+  craters:
+    enabled: true
+    frequency: 0.015
+    depth: 22
+    rimHeight: 6
+    jitter: 0.8
+  caves:
+    enabled: true
+    frequency: 0.02
+    threshold: 0.62
+
+palette:
+  surfaceBlock: minecraft:packed_ice
+  subsurfaceBlock: minecraft:blue_ice
+  subsurfaceDepth: 4
+  deepBlock: minecraft:stone
+  liquidBlock: minecraft:water
+  liquidLevel: -1          # -1 = use terrain.seaLevel above
+
+biomes:
+  mode: single
+  entries:
+    - id: minecraft:snowy_slopes
+      weight: 1
+
+trees:
+  enabled: false
+
+particles:
+  enabled: true
+  type: minecraft:snowflake
+  density: 18
+  radius: 12
+  heightSpread: 8
+  intervalTicks: 4
+  windStrength: 0.03
+
+# Cosmetic v1 seasons (see DESIGN.md section 8/13): cycles between a calm
+# stretch (the particles/flavor above, weather forced clear) and a
+# blizzard stretch (heavier snow, wind, and real vanilla weather allowed
+# to roll in). Nothing here touches already-placed terrain - see the
+# Seasons javadoc for why that's a deliberate v1 limit.
+seasons:
+  enabled: true
+  stages:
+    - name: "Calm"
+      durationTicks: 12000       # ~10 real-world minutes
+      forceClearWeather: true
+    - name: "Blizzard"
+      durationTicks: 6000        # ~5 real-world minutes
+      forceClearWeather: false   # lets vanilla weather actually roll in during this stage
+      particles:
+        type: minecraft:snowflake
+        density: 45
+        radius: 16
+        heightSpread: 10
+        intervalTicks: 2
+        windStrength: 0.12
+
+flavor:
+  gravity: 0.35
+  alwaysClearWeather: true
+  generateStructures: false
+  generateDecorations: false
+  generateVanillaCaves: false
