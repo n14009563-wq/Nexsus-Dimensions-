@@ -1,0 +1,134 @@
+# Tier 2 (datapack, needs a restart) - demonstrates two things at once:
+#
+# 1. A borrowed vanilla sky with none of the baggage: `sky.effects` below
+#    gives this world the Nether's oppressive red-fog-under-a-ceiling look,
+#    with zero resource pack. Unlike setting `environment: NETHER`
+#    (a Tier 1 option - see moon.yml/ice_moon.yml for the Tier 1 sky path
+#    using THE_END), the worldHeight overrides further down keep beds
+#    working and water NOT evaporating - you get the atmosphere, not the
+#    bundled Nether ruleset. Delete the four override lines if you want
+#    the full Nether ruleset bundled in instead.
+#
+# 2. "Grounded" gravity: 2.6 clears the auto-grounded threshold (2.5) in
+#    GravityService, so players here flatly cannot jump - no explicit
+#    allowJumping needed, though you could still force it with
+#    `allowJumping: true` if you wanted heavy-but-still-jumpable instead.
+id: iron_giant_world
+displayName: "Iron Giant World"
+environment: NORMAL
+
+sky:
+  effects: minecraft:the_nether
+
+worldHeight:
+  minY: -64
+  height: 384
+  hasCeiling: true
+  hasSkylight: false
+  ambientLight: 0.15
+  effects: minecraft:the_nether
+  ultrawarm: false        # water does NOT evaporate here, unlike real Nether
+  bedWorks: true           # beds work fine, unlike real Nether
+  respawnAnchorWorks: false
+  natural: true
+  piglinSafe: false
+  hasRaids: true
+
+terrain:
+  seaLevel: 20
+  baseHeight: 80
+  heightVariation: 60
+  noise:
+    frequency: 0.007
+    octaves: 5
+    lacunarity: 2.2
+    gain: 0.5
+    ridged: true
+    warp: 0.2
+  craters:
+    enabled: false
+  # Cellular (Worley-noise) caves instead of the default smooth threshold-
+  # on-fBm carving - reads as a network of roughly egg-shaped chambers,
+  # which fits a volcanic/basalt-deltas theme better than uniform porosity.
+  # cellularThreshold/cellularJitter below are the numerically-tuned
+  # defaults from DESIGN.md section 4c (~13-18% of space carved).
+  caves:
+    enabled: true
+    mode: cellular
+    frequency: 0.018
+    cellularThreshold: 0.32
+    cellularJitter: 0.9
+
+palette:
+  surfaceBlock: minecraft:blackstone
+  subsurfaceBlock: minecraft:cobbled_deepslate
+  subsurfaceDepth: 6
+  deepBlock: minecraft:deepslate
+  liquidBlock: minecraft:lava
+  liquidLevel: 20
+
+biomes:
+  mode: single
+  entries:
+    - id: minecraft:basalt_deltas
+      weight: 1
+
+trees:
+  enabled: false
+
+# One small ruin every ~1 in 200 chunks on average (rarityPerChunk below),
+# each with a single chest wired to a real vanilla loot table via
+# StructureLootService/NexusStructureListener - see DESIGN.md section 9.
+# This preset is Tier 2, so structure placement runs through
+# NexusStructureListener (ChunkLoadEvent), not StructurePopulator.
+# randomRotation/randomMirror (see DESIGN.md section 9) give up to 8
+# distinct orientations per ruin instead of every copy facing the same
+# way - safe here specifically because ruin_small is built entirely from
+# non-directional blocks (stone/mossy/cracked bricks, a chest, a cobweb);
+# the chest's own facing doesn't rotate with it, but nothing about this
+# ruin depends on that being consistent.
+structures:
+  enabled: true
+  blueprint: ruin_small
+  rarityPerChunk: 0.005
+  lootTable: SIMPLE_DUNGEON
+  randomRotation: true
+  randomMirror: true
+
+# The dust storm - noticeably heavier than moon.yml's gentle drift, still
+# capped by AmbientParticleService so it pushes players, doesn't fling them.
+particles:
+  enabled: true
+  type: minecraft:ash
+  density: 35
+  radius: 20
+  heightSpread: 10
+  intervalTicks: 3
+  windStrength: 0.08
+
+# minecraft:basalt_deltas (below) naturally spawns Magma Cubes and Ghasts -
+# both get a heavier, tougher reskin to match the "iron giant" theme. Note
+# spawnMultiplier only thins spawns; there's no supported way to spawn
+# more often than vanilla already attempts (see DESIGN.md section 11).
+creatures:
+  enabled: true
+  spawnMultiplier: 0.6
+  mobs:
+    MAGMA_CUBE:
+      displayName: "Molten Behemoth"
+      alwaysShowName: true
+      healthMultiplier: 2.0
+      speedMultiplier: 0.7
+      scale: 1.6
+    GHAST:
+      displayName: "Ember Warden"
+      alwaysShowName: true
+      healthMultiplier: 1.5
+      damageMultiplier: 1.3
+
+flavor:
+  gravity: 2.6            # >2.5 = grounded by default, see GravityService.GROUNDED_THRESHOLD
+  alwaysClearWeather: true
+  generateStructures: false
+  generateDecorations: false
+  generateVanillaCaves: false

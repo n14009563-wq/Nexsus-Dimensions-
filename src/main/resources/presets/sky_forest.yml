@@ -1,0 +1,158 @@
+# Tier 2 (datapack, requires a server restart to actually appear) -
+# this is the "make it wild" preset: a custom-height world (2032 blocks
+# tall) with a biome that doesn't exist in vanilla Minecraft at all, and
+# giant trees up to 400 blocks tall. The worldHeight block below is what
+# triggers Tier 2 - see DESIGN.md sections 1 and 6 for exactly what that
+# does and does not get you.
+id: sky_forest
+displayName: "Violet Sky Forest"
+environment: NORMAL
+
+worldHeight:
+  minY: -64
+  height: 2032
+  hasCeiling: false
+  hasSkylight: true
+  ambientLight: 1.0
+  effects: minecraft:overworld
+
+terrain:
+  seaLevel: -60           # effectively no water - this world is all forest floor
+  baseHeight: 100
+  heightVariation: 20
+  noise:
+    frequency: 0.01
+    octaves: 4
+    lacunarity: 2.0
+    gain: 0.5
+    ridged: false
+    warp: 0.1
+  craters:
+    enabled: false
+  caves:
+    enabled: false
+
+palette:
+  surfaceBlock: minecraft:moss_block
+  subsurfaceBlock: minecraft:rooted_dirt
+  subsurfaceDepth: 4
+  deepBlock: minecraft:deepslate
+  liquidBlock: minecraft:water
+  liquidLevel: -60
+
+# A biome that does not exist in vanilla Minecraft. DatapackGenerator
+# writes this to data/nexus/worldgen/biome/violet_canopy.json.
+customBiomes:
+  - id: nexus:violet_canopy
+    category: forest
+    temperature: 0.6
+    downfall: 0.8
+    skyColor: "0x8A5CF6"
+    fogColor: "0xC9A8FF"
+    waterColor: "0x5C2E8A"
+    waterFogColor: "0x3A1A5C"
+
+biomes:
+  mode: single
+  entries:
+    - id: nexus:violet_canopy
+      weight: 1
+
+trees:
+  enabled: true
+  rarityPerChunk: 0.02
+  # minHeight/maxHeight/canopyRadius/trunkBlock/leafBlock/giantCanopyLayers
+  # below are the fallback single species used only if `species:` is ever
+  # removed - with species present, every anchor chunk picks one of the
+  # three below (weighted random, deterministic) instead. See DESIGN.md
+  # section 5 and the trees.species schema in section 3.
+  minHeight: 220
+  maxHeight: 400
+  canopyRadius: 26
+  trunkBlock: minecraft:dark_oak_log
+  leafBlock: minecraft:azalea_leaves
+  giantCanopyLayers: 14
+  # branches/buttressRoots default on for every species below (organic
+  # shape, no config needed - see DESIGN.md section 5b). The accent/vine
+  # fields are opt-in per species and deliberately varied here so the
+  # three species read as distinct, not just "the same tree recolored."
+  species:
+    - name: "Violet Titan"
+      weight: 3
+      minHeight: 260
+      maxHeight: 400
+      canopyRadius: 28
+      trunkBlock: minecraft:dark_oak_log
+      leafBlock: minecraft:azalea_leaves
+      giantCanopyLayers: 16
+      canopyAccentBlock: minecraft:shroomlight
+      canopyAccentChance: 0.02
+      vineBlock: minecraft:weeping_vines
+      vineChance: 0.18
+      vineMinLength: 3
+      vineMaxLength: 9
+    - name: "Ashen Spire"
+      weight: 2
+      minHeight: 220
+      maxHeight: 300
+      canopyRadius: 20
+      trunkBlock: minecraft:birch_log
+      leafBlock: minecraft:flowering_azalea_leaves
+      giantCanopyLayers: 12
+      trunkAccentBlock: minecraft:sea_lantern
+      trunkAccentChance: 0.015
+    - name: "Verdant Colossus"
+      weight: 1
+      minHeight: 180
+      maxHeight: 260
+      canopyRadius: 32
+      trunkBlock: minecraft:jungle_log
+      leafBlock: minecraft:mangrove_leaves
+      giantCanopyLayers: 10
+      canopyAccentBlock: minecraft:amethyst_cluster
+      canopyAccentChance: 0.025
+      vineBlock: minecraft:twisting_vines
+      vineChance: 0.25
+      vineMinLength: 2
+      vineMaxLength: 6
+
+# Forest-floor clutter under the giant canopy - bioluminescent fungal caps
+# and moss-covered boulders, built from the same "occasional decoration,
+# not a rare landmark" density model as the giant trees' accents. See
+# DESIGN.md section 5c.
+decorations:
+  enabled: true
+  perChunkAttempts: 3
+  chancePerAttempt: 0.3
+  species:
+    - name: "Violet Fungus Cap"
+      weight: 2
+      block: minecraft:mushroom_stem
+      minHeight: 1
+      maxHeight: 2
+      capBlock: minecraft:shroomlight
+      capRadius: 1
+    - name: "Moss Boulder"
+      weight: 1
+      block: minecraft:mossy_cobblestone
+      minHeight: 1
+      maxHeight: 1
+      capBlock: minecraft:mossy_cobblestone
+      capRadius: 1
+
+# Drifting spores under the giant canopy - vanilla SPORE_BLOSSOM_AIR particles.
+particles:
+  enabled: true
+  type: minecraft:spore_blossom_air
+  density: 6
+  radius: 18
+  heightSpread: 10
+  intervalTicks: 8
+  windStrength: 0.015
+
+flavor:
+  gravity: 1.0
+  alwaysClearWeather: false
+  generateStructures: false
+  generateDecorations: false
+  generateVanillaCaves: false

@@ -1,0 +1,20 @@
+# Nexus Dimensions - plugin-wide settings (not per-dimension; those live in presets/*.yml).
+
+# The data pack_format Tier 2 dimensions' generated datapacks declare in
+# pack.mcmeta. This MUST match the pack_format your exact Minecraft/Paper
+# server version expects, or the datapack can silently fail to activate no
+# matter how many times you restart - a mismatched pack_format is one of
+# the most common reasons a generated datapack just doesn't take effect.
+#
+# 61 is correct for Minecraft 1.21.4 (what this plugin currently targets -
+# see pom.xml). If your server runs a different point release, look up the
+# right number at https://minecraft.wiki/w/Pack_format and change this,
+# then run /nexusdim reload (or just restart) - Tier 2 datapacks are
+# rewritten with the current value on every server boot, so a config edit
+# plus one restart is all it takes, no new plugin build required.
+#
+# Known values as of this plugin's release: 1.21/1.21.1 = 48,
+# 1.21.2/1.21.3 = 57, 1.21.4 = 61, 1.21.5 = 71, 1.21.6 = 80,
+# 1.21.7/1.21.8 = 81. Always double-check the wiki page above for
+# anything newer than that list.
+datapackPackFormat: 61

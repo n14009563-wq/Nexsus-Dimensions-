@@ -1,0 +1,106 @@
+# Tier 1 (instant, no restart) - a cratered, airless moon.
+# THE_END environment gives the black void-style sky, which reads as
+# "space" far better than NORMAL's blue sky ever could without a resource pack.
+id: moon
+displayName: "Barren Moon"
+environment: THE_END
+seed: 424242
+
+terrain:
+  seaLevel: -200          # effectively "no liquid" - see liquidLevel below too
+  baseHeight: 70
+  heightVariation: 25
+  noise:
+    frequency: 0.008
+    octaves: 4
+    lacunarity: 2.0
+    gain: 0.5
+    ridged: false
+    warp: 0.0
+  craters:
+    enabled: true
+    frequency: 0.02
+    depth: 16
+    rimHeight: 4
+    jitter: 0.85
+  caves:
+    enabled: false
+
+palette:
+  surfaceBlock: minecraft:tuff
+  subsurfaceBlock: minecraft:andesite
+  subsurfaceDepth: 5
+  deepBlock: minecraft:stone
+  liquidBlock: minecraft:air
+  liquidLevel: -200
+
+biomes:
+  mode: single
+  entries:
+    - id: minecraft:the_end
+      weight: 1
+
+trees:
+  enabled: false
+
+# Loose moonrock scattered across the surface - built from the same
+# palette blocks as the terrain itself so it reads as ejecta/rubble
+# rather than a foreign decoration. Placed far more densely than trees
+# (perChunkAttempts/chancePerAttempt below), since clutter like this is
+# meant to be common texture, not a rare landmark. See DESIGN.md section 5c.
+decorations:
+  enabled: true
+  perChunkAttempts: 4
+  chancePerAttempt: 0.35
+  species:
+    - name: "Regolith Boulder"
+      weight: 3
+      block: minecraft:tuff
+      minHeight: 1
+      maxHeight: 2
+      capBlock: minecraft:tuff
+      capRadius: 1
+    - name: "Andesite Shard"
+      weight: 2
+      block: minecraft:andesite
+      minHeight: 2
+      maxHeight: 3
+    - name: "Deepslate Fragment"
+      weight: 1
+      block: minecraft:cobbled_deepslate
+      minHeight: 1
+      maxHeight: 1
+      capBlock: minecraft:cobbled_deepslate
+      capRadius: 1
+
+# Regolith dust kicked up around the player - purely vanilla ASH particles,
+# no resource pack. Gentle windStrength so it reads as drifting dust, not
+# a wind tunnel.
+particles:
+  enabled: true
+  type: minecraft:ash
+  density: 10
+  radius: 10
+  heightSpread: 4
+  intervalTicks: 6
+  windStrength: 0.02
+
+# THE_END biome (below) only naturally spawns Endermen, which fits nicely -
+# they already teleport, so a faster/glowing reskin reads as "the moon's
+# own hostile apparition" almost for free. See DESIGN.md section 11.
+creatures:
+  enabled: true
+  mobs:
+    ENDERMAN:
+      displayName: "Lunar Wraith"
+      alwaysShowName: false
+      healthMultiplier: 0.85
+      speedMultiplier: 1.3
+      glowing: true
+
+flavor:
+  gravity: 0.3          # <1.0 = floaty: higher jumps, slow-falling, no fall damage
+  alwaysClearWeather: true
+  generateStructures: false
+  generateDecorations: false
+  generateVanillaCaves: false
